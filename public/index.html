@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>XelzStudio — Roblox Audio Converter</title>
+  <meta name="description" content="XelzStudio converts your YouTube audio to Roblox-compatible speed. Fast, free, and built for players." />
+  <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+  <!-- Background Effects -->
+  <div class="bg-grid"></div>
+  <div class="bg-glow glow-1"></div>
+  <div class="bg-glow glow-2"></div>
+  <div class="particles" id="particles"></div>
+
+  <!-- Navbar -->
+  <nav class="navbar" id="navbar">
+    <div class="nav-inner">
+      <a href="/" class="nav-logo">
+        <span class="logo-icon"><i class="fas fa-waveform-lines"></i></span>
+        <span class="logo-text">Xelz<span class="accent">Studio</span></span>
+      </a>
+      <div class="nav-links">
+        <a href="/#converter" class="nav-link">Converter</a>
+        <a href="/faq" class="nav-link">FAQ</a>
+        <a href="/terms" class="nav-link">Terms</a>
+        <a href="/privacy" class="nav-link">Privacy</a>
+      </div>
+      <div class="nav-badge">
+        <span class="badge-dot"></span>
+        <span>Roblox Ready</span>
+      </div>
+      <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+    <div class="nav-mobile" id="navMobile">
+      <a href="/#converter">Converter</a>
+      <a href="/faq">FAQ</a>
+      <a href="/terms">Terms</a>
+      <a href="/privacy">Privacy</a>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="hero-content">
+      <div class="hero-badge">
+        <i class="fas fa-gamepad"></i>
+        <span>Built for Roblox Players</span>
+      </div>
+      <h1 class="hero-title">
+        <span class="title-line">Convert Audio</span>
+        <span class="title-line accent-line">For Roblox</span>
+      </h1>
+      <p class="hero-sub">
+        Paste a YouTube link and get your audio converted instantly —<br />
+        perfectly tuned for Roblox's audio engine.
+      </p>
+      <div class="hero-stats">
+        <div class="stat-pill"><i class="fas fa-bolt"></i> Instant Convert</div>
+        <div class="stat-pill"><i class="fas fa-shield-halved"></i> Safe & Secure</div>
+        <div class="stat-pill"><i class="fas fa-music"></i> MP3 Output</div>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <div class="wave-container">
+        <svg viewBox="0 0 400 200" class="wave-svg" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="wg" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" style="stop-color:#00f5ff;stop-opacity:1" />
+              <stop offset="100%" style="stop-color:#7b2dff;stop-opacity:1" />
+            </linearGradient>
+          </defs>
+          <polyline class="wave-line" points="0,100 20,60 40,130 60,40 80,110 100,70 120,140 140,50 160,120 180,80 200,100 220,55 240,135 260,45 280,115 300,75 320,140 340,55 360,120 380,80 400,100" fill="none" stroke="url(#wg)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+    </div>
+  </section>
+
+  <!-- Converter Section -->
+  <section class="converter-section" id="converter">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag"><i class="fab fa-youtube"></i> YouTube → Roblox</span>
+        <h2 class="section-title">Audio Converter</h2>
+        <p class="section-desc">Paste your YouTube URL below. We handle the rest.</p>
+      </div>
+
+      <div class="converter-card" id="converterCard">
+        <!-- Step 1: Input -->
+        <div class="step" id="stepInput">
+          <div class="input-group">
+            <div class="input-icon"><i class="fab fa-youtube"></i></div>
+            <input
+              type="url"
+              id="ytUrl"
+              class="url-input"
+              placeholder="https://www.youtube.com/watch?v=..."
+              autocomplete="off"
+              spellcheck="false"
+            />
+            <button class="paste-btn" id="pasteBtn" title="Paste from clipboard">
+              <i class="fas fa-clipboard"></i>
+            </button>
+          </div>
+          <button class="btn-primary" id="fetchBtn">
+            <span class="btn-text"><i class="fas fa-search"></i> Fetch Audio Info</span>
+            <span class="btn-glow"></span>
+          </button>
+          <p class="input-hint">
+            <i class="fas fa-clock"></i> Max duration: 10 minutes &nbsp;|&nbsp;
+            <i class="fas fa-music"></i> Output: MP3 192kbps
+          </p>
+        </div>
+
+        <!-- Step 2: Preview -->
+        <div class="step hidden" id="stepPreview">
+          <div class="track-card">
+            <div class="track-thumb">
+              <img id="trackThumb" src="" alt="Thumbnail" />
+              <div class="thumb-overlay"><i class="fas fa-play"></i></div>
+            </div>
+            <div class="track-info">
+              <h3 id="trackTitle" class="track-title">—</h3>
+              <p id="trackAuthor" class="track-author">—</p>
+              <div class="track-meta">
+                <span id="trackDuration"><i class="fas fa-clock"></i> —</span>
+                <span class="track-format"><i class="fas fa-file-audio"></i> MP3 Output</span>
+              </div>
+            </div>
+          </div>
+          <div class="convert-actions">
+            <button class="btn-secondary" id="resetBtn">
+              <i class="fas fa-arrow-left"></i> Back
+            </button>
+            <button class="btn-primary" id="convertBtn">
+              <span class="btn-text"><i class="fas fa-magic"></i> Convert Now</span>
+              <span class="btn-glow"></span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Step 3: Progress -->
+        <div class="step hidden" id="stepProgress">
+          <div class="progress-display">
+            <div class="progress-icon">
+              <div class="spin-ring"></div>
+              <i class="fas fa-waveform-lines"></i>
+            </div>
+            <h3 class="progress-label" id="progressLabel">Processing Audio…</h3>
+            <p class="progress-sub">Please wait, this may take a moment.</p>
+            <div class="progress-bar-wrap">
+              <div class="progress-bar" id="progressBar"></div>
+            </div>
+            <div class="progress-steps">
+              <span class="pstep active" id="ps1"><i class="fas fa-download"></i> Downloading</span>
+              <span class="pstep" id="ps2"><i class="fas fa-sliders"></i> Processing</span>
+              <span class="pstep" id="ps3"><i class="fas fa-check"></i> Ready</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 4: Done -->
+        <div class="step hidden" id="stepDone">
+          <div class="done-display">
+            <div class="done-icon">
+              <i class="fas fa-check-circle"></i>
+            </div>
+            <h3 class="done-title">Conversion Complete!</h3>
+            <p class="done-sub">Your Roblox-ready audio has been prepared.</p>
+            <a id="downloadLink" class="btn-download" href="#" download>
+              <i class="fas fa-download"></i>
+              <span>Download Audio</span>
+              <span class="btn-glow"></span>
+            </a>
+            <button class="btn-ghost" id="convertAnother">
+              <i class="fas fa-redo"></i> Convert Another
+            </button>
+          </div>
+        </div>
+
+        <!-- Error -->
+        <div class="error-toast hidden" id="errorToast">
+          <i class="fas fa-triangle-exclamation"></i>
+          <span id="errorMsg">An error occurred.</span>
+          <button class="toast-close" id="toastClose"><i class="fas fa-times"></i></button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features Section -->
+  <section class="features-section">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag"><i class="fas fa-star"></i> Why XelzStudio</span>
+        <h2 class="section-title">Built Different</h2>
+      </div>
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feat-icon"><i class="fas fa-bolt"></i></div>
+          <h3>Lightning Fast</h3>
+          <p>Server-side processing ensures your audio is ready in seconds, not minutes.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feat-icon"><i class="fas fa-music"></i></div>
+          <h3>Perfect Tuning</h3>
+          <p>Audio is processed to exactly match Roblox's playback engine — pitch, speed, and tempo aligned.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feat-icon"><i class="fas fa-shield-halved"></i></div>
+          <h3>Secure & Private</h3>
+          <p>Files are deleted from our servers within 10 minutes. No storage, no tracking.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feat-icon"><i class="fas fa-gamepad"></i></div>
+          <h3>Roblox Native</h3>
+          <p>Output is optimized for Roblox Studio upload — MP3 192kbps, 44.1kHz stereo.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feat-icon"><i class="fas fa-infinity"></i></div>
+          <h3>Free to Use</h3>
+          <p>No sign-up, no paywalls. XelzStudio is completely free for all Roblox players.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feat-icon"><i class="fas fa-lock"></i></div>
+          <h3>DDoS Protected</h3>
+          <p>Enterprise-grade rate limiting and security protect the service 24/7.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- How It Works -->
+  <section class="howto-section">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag"><i class="fas fa-list-ol"></i> Steps</span>
+        <h2 class="section-title">How It Works</h2>
+      </div>
+      <div class="steps-row">
+        <div class="step-item">
+          <div class="step-num">01</div>
+          <div class="step-body">
+            <h3>Copy YouTube Link</h3>
+            <p>Find your song or audio on YouTube and copy the URL from the browser.</p>
+          </div>
+        </div>
+        <div class="step-connector"></div>
+        <div class="step-item">
+          <div class="step-num">02</div>
+          <div class="step-body">
+            <h3>Paste & Convert</h3>
+            <p>Paste the link into XelzStudio and click Convert. Processing starts immediately.</p>
+          </div>
+        </div>
+        <div class="step-connector"></div>
+        <div class="step-item">
+          <div class="step-num">03</div>
+          <div class="step-body">
+            <h3>Download & Upload</h3>
+            <p>Download the converted MP3 and upload it directly to Roblox Studio.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-top">
+        <div class="footer-brand">
+          <a href="/" class="nav-logo">
+            <span class="logo-icon"><i class="fas fa-waveform-lines"></i></span>
+            <span class="logo-text">Xelz<span class="accent">Studio</span></span>
+          </a>
+          <p>The trusted Roblox audio converter for players worldwide.</p>
+        </div>
+        <div class="footer-links">
+          <div class="link-col">
+            <h4>Product</h4>
+            <a href="/#converter">Converter</a>
+            <a href="/faq">FAQ</a>
+          </div>
+          <div class="link-col">
+            <h4>Legal</h4>
+            <a href="/terms">Terms of Service</a>
+            <a href="/privacy">Privacy Policy</a>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>© 2025 XelzStudio. All rights reserved.</p>
+        <p class="footer-disclaimer">XelzStudio is not affiliated with Roblox Corporation or YouTube/Google LLC.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="/js/main.js"></script>
+</body>
+</html>

@@ -12,24 +12,68 @@ export default function Home() {
     setIsConverting(true);
 
     // LOGIKA RAHASIA: 
-    // Di UI, user melihat bar dari 0 - 100.
-    // Jika bar di 50 (Normal), sistem diam-diam menggunakan multiplier 2.303x
-    // Rahasia ini tidak akan tampil di layar pengguna.
     let actualSpeedMultiplier = 2.303; 
     
     if (speedBar < 50) {
-      actualSpeedMultiplier = 2.303 - ((50 - speedBar) * 0.02); // Sedikit diperlambat
+      actualSpeedMultiplier = 2.303 - ((50 - speedBar) * 0.02);
     } else if (speedBar > 50) {
-      actualSpeedMultiplier = 2.303 + ((speedBar - 50) * 0.02); // Sedikit dipercepat
+      actualSpeedMultiplier = 2.303 + ((speedBar - 50) * 0.02);
     }
 
     console.log(`[RAHASIA] Memproses dengan speed: ${actualSpeedMultiplier}x`);
 
-    // Simulasi proses konversi (Nantinya ini diganti dengan koneksi ke Backend/API)
-    setTimeout(() => {
+    try {
+      // 1. Mengirim perintah ke Backend lokalmu
+      const response = await fetch('http://localhost:4000/api/convert', {
+        method: 'POST', // Menggunakan metode POST sesuai pintu yang kita buat
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          url: youtubeLink,
+          speed: actualSpeedMultiplier
+        }),
+      });
+
+      // Jika ada error dari server
+      if (!response.ok) {
+        // Coba baca pesan error asli dari backend
+        let errorMessage = 'Gagal memproses audio di server.';
+        try {
+          const errorData = await response.json();
+          if (errorData.error) errorMessage = errorData.error;
+        } catch (e) {}
+        throw new Error(errorMessage);
+      }
+
+      // 2. Mengubah balasan server menjadi file (Blob)
+      const blob = await response.blob();
+      
+      // 3. Membuat sistem download otomatis di browser
+      const downloadUrl = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = downloadUrl;
+      
+      // Mengambil nama file dari server jika ada, atau pakai nama default
+      const contentDisposition = response.headers.get('Content-Disposition');
+      let filename = 'XelzStudio-Audio.ogg';
+      if (contentDisposition && contentDisposition.includes('filename="')) {
+         filename = contentDisposition.split('filename="')[1].split('"')[0];
+      }
+      
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click(); // Mengeklik tombol download secara tak kasat mata
+      document.body.removeChild(a);
+      window.URL.revokeObjectURL(downloadUrl); // Membersihkan memori browser
+
+      alert('Berhasil! File audio sedang diunduh.');
+    } catch (error) {
+      console.error(error);
+      alert('Terjadi kesalahan saat mengonversi. Pastikan Backend menyala!');
+    } finally {
       setIsConverting(false);
-      alert('Konversi selesai! File siap diunduh.');
-    }, 3000);
+    }
   };
 
   return (
